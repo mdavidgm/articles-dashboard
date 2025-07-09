@@ -9,7 +9,6 @@ const {
       const articles = await fetchArticles(req.query);
       res.json(articles);
     } catch (err) {
-      console.error(err);
       res.status(500).json({ error: 'Error fetching articles' });
     }
   };
@@ -20,7 +19,6 @@ const {
       if (!article) return res.status(404).json({ error: 'Article not found' });
       res.json(article);
     } catch (err) {
-      console.error(err);
       res.status(500).json({ error: 'Error fetching article' });
     }
   };
@@ -30,7 +28,6 @@ const {
       const summary = await generateMockSummary(req.params.id);
       res.json(summary);
     } catch (err) {
-      console.error(err);
       res.status(500).json({ error: 'Error generating summary' });
     }
   };

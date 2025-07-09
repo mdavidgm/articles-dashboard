@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "DATABASE_URL=\"file:./prisma/test.db\" jest --coverage",
+    "test": "DATABASE_URL=\"file:./test.db\" jest --coverage",
     "prisma:seed": "node prisma/seed.js",
-    "start": "DATABASE_URL=\"file:./prisma/dev.db\" node src/index.js",
-    "dev": "DATABASE_URL=\"file:./prisma/dev.db\" nodemon src/index.js"
+    "start": "DATABASE_URL=\"file:./dev.db\" node src/index.js",
+    "dev": "DATABASE_URL=\"file:./dev.db\" nodemon src/index.js"
   },
   "keywords": [],
   "author": "mdavid29021984@gmail.com",

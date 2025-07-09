@@ -2,6 +2,7 @@
 node_modules/
 /generated/prisma
 /coverage
+/prisma/test.db
 
 /.DS_Store
 */.DS_Store

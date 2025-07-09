@@ -12,6 +12,7 @@ npx prisma generate
 ```
 *Not sure if 'npm run prisma:seed' too, I will see when I try to install this repository from scratch.*
 *Whether I have to, makes not sense to have dev.db filled in the repository, in theory this instruction is not needed and my database is ready to use*
+*DATABASE_URL="file:./prisma/test.db" npx prisma db push to update test data base, just once, not sure if needed*
 
 To run API:
 ```
