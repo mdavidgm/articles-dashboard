@@ -17,7 +17,7 @@ async function main() {
     articlesToCreate.push({
       title: faker.lorem.sentence(5),
       author: faker.person.fullName(),
-      content: faker.lorem.paragraphs(3),
+      content: faker.lorem.paragraphs(30),
       views: faker.number.int({ min: 100, max: 5000 }),
       shares: faker.number.int({ min: 10, max: 500 }),
       createdAt: faker.date.past({ years: 2 }),
@@ -31,16 +31,6 @@ async function main() {
     });
     createdArticles.push(article);
     console.log(`Article created: "${article.title}"`);
-  }
-
-  for (const article of createdArticles) {
-    await prisma.summary.create({
-      data: {
-        articleId: article.id,
-        summary: faker.lorem.paragraph(2),
-      },
-    });
-    console.log(`Summary created for article ID: ${article.id}`);
   }
 
   console.log('Seeding completed successfully!');
