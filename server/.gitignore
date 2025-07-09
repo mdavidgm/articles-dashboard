@@ -1,6 +1,7 @@
 # Node modules
 node_modules/
 /generated/prisma
+/coverage
 
 /.DS_Store
 */.DS_Store
