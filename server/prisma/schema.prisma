@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -22,6 +21,7 @@ model Article {
   views     Int      @default(0)
   shares    Int      @default(0)
   createdAt DateTime @default(now())
+  summary   Summary?
 }
 
 model Summary {
