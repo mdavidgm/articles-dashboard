@@ -1,15 +1,13 @@
-
 import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from '@testing-library/react';
-import { useAppStore, } from '../../store';
+import { useAppStore } from '../../store';
 import ArticlesList from './ArticlesList';
 import type { ArticleCard } from '../../store/types';
 
-describe.only('ArticlesList - Mocking api response', () => {
-  let fetchArticlesSpy: ReturnType<typeof vi.spyOn>;
-  const mockArticlesArray = [
+describe('ArticlesList - Component State Rendering', () => {
+  const mockArticlesArray: ArticleCard[] = [
     {
       id: 101,
       title: 'Top Article by Views',
@@ -18,7 +16,7 @@ describe.only('ArticlesList - Mocking api response', () => {
       views: 987,
       shares: 123,
       createdAt: 1752205200000,
-    } as ArticleCard,
+    },
     {
       id: 202,
       title: 'Viral Article by Shares',
@@ -27,69 +25,84 @@ describe.only('ArticlesList - Mocking api response', () => {
       views: 456,
       shares: 543,
       createdAt: 1752205200000,
-    } as ArticleCard,
+    },
   ];
-
-  const mockApiResponseData = {
-    articlesData: mockArticlesArray,
-    totalCount: mockArticlesArray.length,
-  };
 
   beforeEach(() => {
     act(() => {
       useAppStore.getState().resetAllSlices();
-
-      //cite_start: We spy on the fetchArticles function to track its calls
-      fetchArticlesSpy = vi.spyOn(useAppStore.getState(), 'fetchArticles');
     });
   });
 
   afterEach(() => {
-    fetchArticlesSpy.mockRestore();
     vi.restoreAllMocks();
   });
 
-  it('Success', async () => {
-
-    //cite_start: Here we return the mocked value for api response
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => mockApiResponseData,
-      status: 200,
-    } as Response);
+  it('should render loading state when articlesIsLoading is true', () => {
+    act(() => {
+      useAppStore.setState({ articlesIsLoading: true });
+    });
 
     render(<ArticlesList />);
 
     expect(screen.getByRole('progressbar', { name: 'Loading articles' })).toBeInTheDocument();
-    expect(fetchArticlesSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
-
-      expect(screen.getByText(mockApiResponseData.articlesData[0].title)).toBeInTheDocument();
-      expect(screen.getByText(mockApiResponseData.articlesData[1].title)).toBeInTheDocument();
-
-    });
-
+    expect(screen.getByText('Loading articles...')).toBeInTheDocument();
   });
 
-  it('Error', async () => {
+  it('should render articles list on successful data load', async () => {
+    act(() => {
+      useAppStore.setState({
+        articlesData: mockArticlesArray,
+        articlesIsLoading: false,
+        articlesError: null,
+        totalCount: mockArticlesArray.length,
+        currentPage: 1,
+        articlesPerPage: 10,
+      });
+    });
 
-    //cite_start: Error case, we mock the fetch to return an error response
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: false,
-      status: 500,
-      text: async () => 'Internal Server Error Mock',
-    } as Response);
     render(<ArticlesList />);
 
-    expect(screen.getByRole('progressbar', { name: 'Loading articles' })).toBeInTheDocument();
-    expect(fetchArticlesSpy).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
-      expect(screen.getByText('Internal Server Error Mock')).toBeInTheDocument();
-    });
+    expect(screen.getByText(mockArticlesArray[0].title)).toBeInTheDocument();
+    expect(screen.getByText(mockArticlesArray[1].title)).toBeInTheDocument();
+
+    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(mockArticlesArray.length);
   });
 
+  it('should render error message when articlesError is set', async () => {
+    const errorMessage = 'Internal Server Error Mock';
+    act(() => {
+      useAppStore.setState({
+        articlesError: errorMessage,
+        articlesIsLoading: false,
+        articlesData: null,
+      });
+    });
+
+    render(<ArticlesList />);
+
+    expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
+
+    expect(screen.getByText(`${errorMessage}`)).toBeInTheDocument();
+  });
+
+  it('should render "No articles available." when data is empty', () => {
+    act(() => {
+      useAppStore.setState({
+        articlesData: [],
+        articlesIsLoading: false,
+        articlesError: null,
+        totalCount: 0,
+      });
+    });
+
+    render(<ArticlesList />);
+
+    expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
+
+    expect(screen.getByText('No articles available.')).toBeInTheDocument();
+  });
 });

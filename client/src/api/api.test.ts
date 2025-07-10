@@ -121,7 +121,7 @@ describe('api.fetchArticles', () => {
 
     const result = await api.fetchArticles();
 
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles');
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles?page=1&limit=10');
     expect(result.outcome).toBe('success');
     if (result.outcome === 'success') {
       expect(Array.isArray(result.data.articlesData)).toBe(true);

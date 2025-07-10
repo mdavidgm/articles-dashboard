@@ -1,5 +1,6 @@
 import HighlightSection from '../components/highlight-section/HighlightSection';
 import ArticlesList from '../components/articles-list/ArticlesList';
+import ArticlesPagination from '../components/articles-pagination/ArticlesPagination';
 
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -21,6 +22,7 @@ function Dashboard() {
       </AppBar>
 
       <HighlightSection />
+      <ArticlesPagination />
       <ArticlesList />
     </>
   );

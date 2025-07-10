@@ -4,22 +4,36 @@ import type { ArticlesSlice, AppState } from '../types';
 
 const initialProps = {
   articlesData: null,
-  totalCount: null,
+  totalCount: 0,
   articlesError: null,
+  articlesIsLoading: false,
+  currentPage: 1,
+  articlesPerPage: 10,
 };
 
 export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> = (set) => ({
   ...initialProps,
-  fetchArticles: async () => {
+  fetchArticles: async (page: number, articlesPerPage: number) => {
     set({ articlesError: null });
 
     //cite_start: Fetching articles data from the API
-    const result = await api.fetchArticles();
-    console.log('Fetched articles:', result);
+    const result = await api.fetchArticles(page, articlesPerPage);
+
     if (result.outcome === 'success') {
-      set({ articlesData: result.data.articlesData, totalCount: result.data.totalCount });
+      set({ 
+        articlesData: result.data.articlesData, 
+        totalCount: result.data.totalCount, 
+        articlesIsLoading: false,
+        currentPage: page,
+      });
     } else {
-      set({ articlesError: result.error, articlesData: null });
+      console.log('Error fetching articles:', result.error);
+      set({ 
+        articlesError: result.error, 
+        articlesData: null, 
+        articlesIsLoading: false,
+        currentPage: 1,
+      });
     }
   },
   resetArticles: () => {

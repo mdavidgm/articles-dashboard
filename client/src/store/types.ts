@@ -47,9 +47,12 @@ export interface ArticlesResponse {
 
 export interface ArticlesSlice {
   articlesData: ArticleCard[] | null;
-  totalCount: number | null;
+  totalCount: number;
+  articlesIsLoading: boolean;
+  currentPage: number;
+  articlesPerPage: number;
   articlesError: string | null;
-  fetchArticles: () => Promise<void>;
+  fetchArticles: (page: number, articlesPerPage: number) => Promise<void>;
   resetArticles: () => void;
 }
 

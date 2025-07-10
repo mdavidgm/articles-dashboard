@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useAppStore } from '../../store';
 import ArticleCard from '../article-card/ArticleCard';
 import type { ArticleCard as ArticleCardProps } from '../../store/types';
@@ -15,13 +14,27 @@ import {
 const ArticlesList = () => {
   const articlesData = useAppStore((state) => state.articlesData);
   const articlesError = useAppStore((state) => state.articlesError);
-  const fetchArticles = useAppStore((state) => state.fetchArticles);
-
-  useEffect(() => {
-    fetchArticles();
-  }, [fetchArticles]);
+  const articlesIsLoading = useAppStore((state) => state.articlesIsLoading);
 
   const commonMinHeight = '200px';
+
+  if (articlesIsLoading) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        minHeight={commonMinHeight}
+        aria-live="polite"
+        aria-busy="true"
+        sx={{ p: 2 }}
+      >
+        <CircularProgress aria-label="Loading articles" />
+        <Typography variant="h6" sx={{ mt: 2 }}>Loading articles...</Typography>
+      </Box>
+    );
+  }
 
   if (articlesError) {
     return (
@@ -41,9 +54,6 @@ const ArticlesList = () => {
   if (articlesData && articlesData.length > 0) {
     return (
       <Box sx={{ p: 2, minHeight: commonMinHeight, backgroundColor: '#F5F5F5' }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          Browse Article
-        </Typography>
         <List>
           {articlesData.map((article: ArticleCardProps) => (
             <div key={article.id}>
@@ -60,15 +70,14 @@ const ArticlesList = () => {
   return (
     <Box
       display="flex"
-      flexDirection="column"
       justifyContent="center"
       alignItems="center"
       minHeight={commonMinHeight}
-      aria-live="polite"
-      aria-busy="true"
       sx={{ p: 2 }}
     >
-      <CircularProgress aria-label="Loading articles" />
+      <Typography variant="body1" color="text.secondary">
+        No articles available.
+      </Typography>
     </Box>
   );
 };
