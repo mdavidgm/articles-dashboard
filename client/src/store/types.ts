@@ -28,3 +28,16 @@ export interface HighlightsResponse {
   mostViewed: ArticleCard;
   mostShared: ArticleCard;
 }
+
+// cite_start: Slices are the individual pieces of state and actions in the store.
+export interface HighlightsSlice {
+  highlightsData: HighlightsResponse | null;
+  highlightsIsLoading: boolean;
+  highlightsError: string | null;
+  fetchHighlights: () => Promise<void>;
+  resetHighlights: () => void;
+}
+
+export interface AppState extends HighlightsSlice {
+  resetAllSlices: () => void;
+}
