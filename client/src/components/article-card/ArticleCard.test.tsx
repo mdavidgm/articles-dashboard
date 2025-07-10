@@ -1,0 +1,68 @@
+import { render, screen, within } from '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
+import { describe, it, expect } from 'vitest';
+import type { ArticleCard as ArticleCardProps } from '../../types';
+import ArticleCard from './ArticleCard';
+
+describe('ArticleCard Component', () => {
+  const baseMockArticle: ArticleCardProps = {
+    id: 1,
+    title: 'An Accessible Guide to Testing',
+    author: 'Jane Doe',
+    content: 'This is the main content of the article.',
+    views: 150,
+    shares: 25,
+    createdAt: new Date('2025-07-10T10:00:00Z'),
+    summary: undefined,
+  };
+
+  it('should render the main article content correctly', () => {
+    render(<ArticleCard {...baseMockArticle} />);
+
+    const article = screen.getByRole('article', {
+      name: /An Accessible Guide to Testing/i,
+    });
+
+    expect(article).toBeInTheDocument();
+
+    const heading = within(article).getByRole('heading', {
+      name: /An Accessible Guide to Testing/i,
+      level: 2,
+    });
+    expect(heading).toBeInTheDocument();
+
+    expect(within(article).getByText(/By: Jane Doe/i)).toBeInTheDocument();
+    expect(within(article).getByText(/main content of the article/i)).toBeInTheDocument();
+  });
+
+  it('should display the article stats correctly', () => {
+    render(<ArticleCard {...baseMockArticle} />);
+
+    expect(screen.getByText(/Views: 150/i)).toBeInTheDocument();
+    expect(screen.getByText(/Shares: 25/i)).toBeInTheDocument();
+
+    const timeElement = screen.getByRole('time');
+    expect(timeElement).toHaveTextContent(baseMockArticle.createdAt.toLocaleDateString());
+    expect(timeElement).toHaveAttribute('datetime', baseMockArticle.createdAt.toISOString());
+  });
+
+  describe('when a summary is provided', () => {
+    it('should render the summary section', () => {
+      const withSummary = { ...baseMockArticle, summary: 'This is a test summary.' };
+      render(<ArticleCard {...withSummary} />);
+
+      const summaryHeading = screen.getByRole('heading', { name: /Summary/i, level: 3 });
+      expect(summaryHeading).toBeInTheDocument();
+      expect(screen.getByText(/This is a test summary/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('when a summary is not provided', () => {
+    it('should not render the summary section', () => {
+      render(<ArticleCard {...baseMockArticle} />);
+
+      const summaryHeading = screen.queryByRole('heading', { name: /Summary/i });
+      expect(summaryHeading).not.toBeInTheDocument();
+    });
+  });
+});
