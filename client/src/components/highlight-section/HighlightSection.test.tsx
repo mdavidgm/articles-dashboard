@@ -54,13 +54,20 @@ describe('HighlightSection - Mocking api response', () => {
 
     render(<HighlightSection />);
 
-    expect(screen.getByText('Loading highlights...')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
     expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
 
     await waitFor(() => {
-      expect(screen.queryByText('Loading highlights...')).not.toBeInTheDocument();
-      expect(screen.getByText('Highlights section is ready!')).toBeInTheDocument();
+      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
+
+      expect(screen.getByRole('heading', { level: 2, name: 'Highlights Section' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 3, name: mockData.mostViewed.title })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 3, name: mockData.mostShared.title })).toBeInTheDocument();
+
+      const listItems = screen.getAllByRole('listitem');
+      expect(listItems).toHaveLength(2);
     });
+
   });
 
   it('Error', async () => {
@@ -73,11 +80,11 @@ describe('HighlightSection - Mocking api response', () => {
     } as Response);
     render(<HighlightSection />);
 
-    expect(screen.getByText('Loading highlights...')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
     expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
 
     await waitFor(() => {
-      expect(screen.queryByText('Loading highlights...')).not.toBeInTheDocument();
+      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
       expect(screen.getByText('Internal Server Error Mock')).toBeInTheDocument();
     });
   });
