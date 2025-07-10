@@ -27,7 +27,7 @@ async function main() {
       author: 'Kent C. Dodds',
       content: faker.lorem.paragraphs(30),
       views: 10000,
-      shares: 900,
+      shares: 100,
       createdAt: faker.date.past({ years: 2 }),
     }
   );

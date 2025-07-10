@@ -1,7 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+//cite_start: Delay to simulate network latency
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const fetchHighlights = async (author) => {
+  await delay(3000);
   const where = author ? { author: { equals: author } } : {};
 
   const [mostViewed] = await prisma.article.findMany({
