@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import type { ArticleCard as ArticleCardProps } from '../../types';
 
-const ArticleCard = (props: ArticleCardProps ) => {
+const ArticleCard = (props: ArticleCardProps) => {
   const titleId = `article-title-${props.id}`;
 
   return (
@@ -36,8 +36,8 @@ const ArticleCard = (props: ArticleCardProps ) => {
         >
           <Typography variant="caption">Views: {props.views}</Typography>
           <Typography variant="caption">Shares: {props.shares}</Typography>
-          <Typography variant="caption" component="time" dateTime={props.createdAt.toISOString()}>
-            {props.createdAt.toLocaleDateString()}
+          <Typography variant="caption" component="time" dateTime={new Date(props.createdAt).toLocaleDateString()}>
+            {new Date(props.createdAt).toLocaleDateString()}
           </Typography>
         </Box>
 

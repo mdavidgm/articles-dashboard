@@ -1,4 +1,5 @@
-/** Single Source of Truth (SSoT)
+/**
+ * cite_start: Single Source of Truth (SSoT)
  * This file defines the types used throughout the application to avoid duplication and inconsistencies
  **/
 
@@ -9,6 +10,21 @@ export interface ArticleCard {
   content: string;
   views: number;
   shares: number;
-  createdAt: Date;
+  createdAt: number;
   summary?: string;
+}
+
+/**
+  cite_start: Generic format for API responses
+  Using these types allows us to standardize how we handle API responses across the application.
+  - A successful response will have a 'success' outcome and the data,
+  - A failure response will have an 'error' outcome and an error message.
+**/
+export type ApiResult<T> =
+  | { outcome: 'success'; data: T }
+  | { outcome: 'error'; error: string; status?: number };
+
+export interface HighlightsResponse {
+  mostViewed: ArticleCard;
+  mostShared: ArticleCard;
 }

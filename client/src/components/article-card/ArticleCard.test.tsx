@@ -12,7 +12,7 @@ describe('ArticleCard Component', () => {
     content: 'This is the main content of the article.',
     views: 150,
     shares: 25,
-    createdAt: new Date('2025-07-10T10:00:00Z'),
+    createdAt: 1752205200000,
     summary: undefined,
   };
 
@@ -42,8 +42,9 @@ describe('ArticleCard Component', () => {
     expect(screen.getByText(/Shares: 25/i)).toBeInTheDocument();
 
     const timeElement = screen.getByRole('time');
-    expect(timeElement).toHaveTextContent(baseMockArticle.createdAt.toLocaleDateString());
-    expect(timeElement).toHaveAttribute('datetime', baseMockArticle.createdAt.toISOString());
+    const expectedDateString = new Date(baseMockArticle.createdAt).toLocaleDateString();
+    expect(timeElement).toHaveTextContent(expectedDateString);
+    expect(timeElement).toHaveAttribute('datetime', expectedDateString);
   });
 
   describe('when a summary is provided', () => {
