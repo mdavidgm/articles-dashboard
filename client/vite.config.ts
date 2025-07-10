@@ -12,12 +12,12 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
-    exclude: ['tests/', "node_modules/", "dist/", "**/*.d.ts", "src/types.tsx"],
+    exclude: ['e2e/', "node_modules/", "dist/", "**/*.d.ts", "src/types.tsx"],
     coverage: {
       provider: 'v8', // o 'istanbul'
       reporter: ['text', 'json', 'html'],
       include: ['src/'],
-      exclude: ['tests/', "node_modules/", "dist/", "**/*.d.ts", "src/types.tsx"],
+      exclude: ['e2e/', "node_modules/", "dist/", "**/*.d.ts", "src/types.tsx"],
     },
   },
 });
