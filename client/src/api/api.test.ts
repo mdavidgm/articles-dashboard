@@ -82,3 +82,46 @@ describe('api.fetchHighlights', () => {
     });
   });
 });
+
+describe('api.fetchArticles', () => {
+  it('should return articles on a successful fetch', async () => {
+    const mockData = {
+      mostViewed: {
+        id: 101,
+        title: 'Top Article by Views',
+        author: 'Jane Doe',
+        content: 'Content of the most viewed article.',
+        views: 987,
+        shares: 123,
+        createdAt: 1752205200000,
+      } as ArticleCard,
+      mostShared: {
+        id: 202,
+        title: 'Viral Article by Shares',
+        author: 'John Smith',
+        content: 'Content of the most shared article.',
+        views: 456,
+        shares: 543,
+        createdAt: 1752205200000,
+      } as ArticleCard,
+    };
+
+    //cite_start: Mocking the fetch response, do not confuse with the response returned by our api function
+    const mockResponse = new Response(JSON.stringify(mockData), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
+
+    const result = await api.fetchArticles();
+
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles');
+
+    //cite_start: We expect the outcome to be success and a data to match our mockData
+    expect(result).toEqual({
+      outcome: 'success',
+      data: mockData,
+    });
+  });
+});

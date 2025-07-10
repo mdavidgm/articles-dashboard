@@ -38,4 +38,5 @@ export async function safeFetch<T>(endpoint: string): Promise<ApiResult<T>> {
 export const api = {
   // cite_start: here we send the response type and function to the safeFetch function
   fetchHighlights: () => safeFetch<HighlightsResponse>('/highlights'),
+  fetchArticles: () => safeFetch<HighlightsResponse>('/articles'),
 };
