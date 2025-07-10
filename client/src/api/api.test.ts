@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { api, safeFetch } from './api';
+import { api, safeFetch } from '.';
 import type { ArticleCard } from '../store/types';
 
 afterEach(() => {
