@@ -94,10 +94,12 @@ describe('Articles Controller - Integration Tests', () => {
       await articlesController.getArticles(req, res);
 
       expect(res.json).toHaveBeenCalledTimes(1);
-      const articles = res.json.mock.calls[0][0];
+      const articles = res.json.mock.calls[0][0].data;
       expect(articles.length).toBeGreaterThanOrEqual(2);
       expect(articles.some(a => a.title === 'Integration Test Article 1')).toBe(true);
       expect(articles.some(a => a.title === 'Another Test Article')).toBe(true);
+      const totalCount = res.json.mock.calls[0][0].totalCount;
+      expect(totalCount).toBe(4);
       expect(res.status).not.toHaveBeenCalledWith(500);
     });
 
@@ -111,9 +113,11 @@ describe('Articles Controller - Integration Tests', () => {
       await articlesController.getArticles(req, res);
 
       expect(res.json).toHaveBeenCalledTimes(1);
-      const articles = res.json.mock.calls[0][0];
+      const articles = res.json.mock.calls[0][0].data;
       expect(articles).toHaveLength(1);
       expect(articles[0].author).toBe('Test Author');
+      const totalCount = res.json.mock.calls[0][0].totalCount;
+      expect(totalCount).toBe(1);
     });
 
     test('should return articles sorted by views in descending order', async () => {
@@ -126,12 +130,14 @@ describe('Articles Controller - Integration Tests', () => {
       await articlesController.getArticles(req, res);
 
       expect(res.json).toHaveBeenCalledTimes(1);
-      const articles = res.json.mock.calls[0][0];
+      const articles = res.json.mock.calls[0][0].data;
       expect(articles.length).toBeGreaterThanOrEqual(4);
       expect(articles[0].title).toBe('Article with more views');
       expect(articles[0].views).toBe(300);
       expect(articles[1].title).toBe('Another Test Article');
       expect(articles[1].views).toBe(200);
+      const totalCount = res.json.mock.calls[0][0].totalCount;
+      expect(totalCount).toBe(4);
     });
 
     test('should return articles sorted by shares in ascending order', async () => {
@@ -144,12 +150,14 @@ describe('Articles Controller - Integration Tests', () => {
       await articlesController.getArticles(req, res);
 
       expect(res.json).toHaveBeenCalledTimes(1);
-      const articles = res.json.mock.calls[0][0];
+      const articles = res.json.mock.calls[0][0].data;
       expect(articles.length).toBeGreaterThanOrEqual(4);
       expect(articles[0].title).toBe('Integration Test Article 1');
       expect(articles[0].shares).toBe(10);
       expect(articles[1].title).toBe('Article with more views');
       expect(articles[1].shares).toBe(15);
+      const totalCount = res.json.mock.calls[0][0].totalCount;
+      expect(totalCount).toBe(4);
     });
   });
 

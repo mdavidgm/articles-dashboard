@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "DATABASE_URL=\"file:./test.db\" jest --coverage",
+    "test": "DATABASE_URL=\"file:./test.db\" jest --coverage --runInBand",
     "prisma:seed": "node prisma/seed.js",
+    "prisma:seed-test": "DATABASE_URL='file:./test.db' npx prisma db push",
     "start": "DATABASE_URL=\"file:./dev.db\" node src/index.js",
     "dev": "DATABASE_URL=\"file:./dev.db\" nodemon src/index.js"
   },
