@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { describe, it, expect } from 'vitest';
-import type { ArticleCard as ArticleCardProps } from '../../types';
+import type { ArticleCard as ArticleCardProps } from '../../store/types';
 import ArticleCard from './ArticleCard';
 
 describe('ArticleCard Component', () => {

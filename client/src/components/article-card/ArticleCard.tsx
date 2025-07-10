@@ -2,7 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import type { ArticleCard as ArticleCardProps } from '../../types';
+import type { ArticleCard as ArticleCardProps } from '../../store/types';
 
 const ArticleCard = (props: ArticleCardProps) => {
   const titleId = `article-title-${props.id}`;

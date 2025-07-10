@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { api, safeFetch } from './api';
-import type { ArticleCard } from '../types';
+import type { ArticleCard } from '../store/types';
 
 afterEach(() => {
   vi.restoreAllMocks();

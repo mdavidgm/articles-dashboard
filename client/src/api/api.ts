@@ -1,4 +1,4 @@
-import type { HighlightsResponse, ApiResult } from '../types';
+import type { HighlightsResponse, ApiResult } from '../store/types';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
