@@ -10,7 +10,6 @@ import {
   Alert,
   List,
   ListItem,
-  Divider,
 } from '@mui/material';
 
 const ArticlesList = () => {
