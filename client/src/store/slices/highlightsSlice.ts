@@ -14,7 +14,6 @@ export const createHighlightsSlice: StateCreator<AppState, [], [], HighlightsSli
 
     //cite_start: Fetching highlights data from the API
     const result = await api.fetchHighlights();
-    console.log('Highlights API result:', result);
     if (result.outcome === 'success') {
       set({ highlightsData: result.data });
     } else {
