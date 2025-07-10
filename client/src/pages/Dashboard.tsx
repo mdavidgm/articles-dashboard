@@ -1,12 +1,12 @@
 import HighlightSection from '../components/highlight-section/HighlightSection';
 
-import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function Dashboard() {
   return (
     <>
-      <AppBar position="static" color="primary" sx={{ mb: 4 }}>
+      <AppBar position="static" color="primary" sx={{ mb: 3, borderRadius: '5px' }}>
         <Toolbar>
           <DashboardIcon sx={{ mr: 2 }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

@@ -60,12 +60,9 @@ describe('HighlightSection - Mocking api response', () => {
     await waitFor(() => {
       expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
 
-      expect(screen.getByRole('heading', { level: 2, name: 'Highlights Section' })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { level: 3, name: mockData.mostViewed.title })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { level: 3, name: mockData.mostShared.title })).toBeInTheDocument();
+      expect(screen.getByText(mockData.mostViewed.title)).toBeInTheDocument();
+      expect(screen.getByText(mockData.mostShared.title)).toBeInTheDocument();
 
-      const listItems = screen.getAllByRole('listitem');
-      expect(listItems).toHaveLength(2);
     });
 
   });

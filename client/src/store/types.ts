@@ -14,6 +14,10 @@ export interface ArticleCard {
   summary?: string;
 }
 
+export interface HighlightCardProps extends ArticleCard {
+  type: 'viewed' | 'shared';
+}
+
 /**
   cite_start: Generic format for API responses
   Using these types allows us to standardize how we handle API responses across the application.
