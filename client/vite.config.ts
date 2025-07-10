@@ -17,7 +17,7 @@ export default defineConfig({
       provider: 'v8', // o 'istanbul'
       reporter: ['text', 'json', 'html'],
       include: ['src/'],
-      exclude: ['e2e/', "node_modules/", "dist/", "**/*.d.ts", "src/types.tsx"],
+      exclude: ['e2e/', 'node_modules/', 'dist/', "**/*.d.ts", 'src/types.tsx', 'src/main.tsx', 'src/App.tsx'],
     },
   },
 });
