@@ -42,10 +42,12 @@ export interface HighlightsSlice {
 }
 export interface ArticlesResponse {
   articlesData: ArticleCard[];
+  totalCount: number;
 }
 
 export interface ArticlesSlice {
   articlesData: ArticleCard[] | null;
+  totalCount: number | null;
   articlesError: string | null;
   fetchArticles: () => Promise<void>;
   resetArticles: () => void;

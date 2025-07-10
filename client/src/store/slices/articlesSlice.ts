@@ -4,6 +4,7 @@ import type { ArticlesSlice, AppState } from '../types';
 
 const initialProps = {
   articlesData: null,
+  totalCount: null,
   articlesError: null,
 };
 
@@ -14,8 +15,9 @@ export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> 
 
     //cite_start: Fetching articles data from the API
     const result = await api.fetchArticles();
+    console.log('Fetched articles:', result);
     if (result.outcome === 'success') {
-      set({ articlesData: result.data });
+      set({ articlesData: result.data.articlesData, totalCount: result.data.totalCount });
     } else {
       set({ articlesError: result.error, articlesData: null });
     }

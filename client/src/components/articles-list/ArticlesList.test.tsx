@@ -9,7 +9,7 @@ import type { ArticleCard } from '../../store/types';
 
 describe.only('ArticlesList - Mocking api response', () => {
   let fetchArticlesSpy: ReturnType<typeof vi.spyOn>;
-  const mockData = [
+  const mockArticlesArray = [
     {
       id: 101,
       title: 'Top Article by Views',
@@ -30,6 +30,11 @@ describe.only('ArticlesList - Mocking api response', () => {
     } as ArticleCard,
   ];
 
+  const mockApiResponseData = {
+    articlesData: mockArticlesArray,
+    totalCount: mockArticlesArray.length,
+  };
+
   beforeEach(() => {
     act(() => {
       useAppStore.getState().resetAllSlices();
@@ -49,7 +54,7 @@ describe.only('ArticlesList - Mocking api response', () => {
     //cite_start: Here we return the mocked value for api response
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
-      json: async () => mockData,
+      json: async () => mockApiResponseData,
       status: 200,
     } as Response);
 
@@ -61,8 +66,8 @@ describe.only('ArticlesList - Mocking api response', () => {
     await waitFor(() => {
       expect(screen.queryByRole('progressbar', { name: 'Loading articles' })).not.toBeInTheDocument();
 
-      expect(screen.getByText(mockData[0].title)).toBeInTheDocument();
-      expect(screen.getByText(mockData[1].title)).toBeInTheDocument();
+      expect(screen.getByText(mockApiResponseData.articlesData[0].title)).toBeInTheDocument();
+      expect(screen.getByText(mockApiResponseData.articlesData[1].title)).toBeInTheDocument();
 
     });
 
