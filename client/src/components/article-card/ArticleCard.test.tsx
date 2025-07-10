@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { describe, it, expect } from 'vitest';
 import type { ArticleCard as ArticleCardProps } from '../../store/types';
@@ -14,6 +14,17 @@ describe('ArticleCard Component', () => {
     shares: 25,
     createdAt: 1752205200000,
     summary: undefined,
+  };
+
+  const longMockArticle: ArticleCardProps = {
+    ...baseMockArticle,
+    content:
+      'This is a very long piece of content that should definitely exceed one line and trigger the "View More" button. It needs to be long enough to demonstrate the collapsing functionality effectively. The character limit for showing the button is 150 characters, so this text easily surpasses that threshold to ensure the button is always present for testing the expand/collapse behavior. This helps verify that the content is initially truncated and expands fully upon interaction.',
+  };
+
+  const shortMockArticle: ArticleCardProps = {
+    ...baseMockArticle,
+    content: 'This is short content.',
   };
 
   it('should render the main article content correctly', () => {
@@ -64,6 +75,51 @@ describe('ArticleCard Component', () => {
 
       const summaryHeading = screen.queryByRole('heading', { name: /Summary/i });
       expect(summaryHeading).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Content collapsing functionality', () => {
+    it('should show "View More" and collapse content initially if long', () => {
+      render(<ArticleCard {...longMockArticle} />);
+
+      const viewMoreButton = screen.getByRole('button', { name: /View More/i });
+      expect(viewMoreButton).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /View Less/i })).not.toBeInTheDocument();
+
+    });
+
+    it('should expand content and show "View Less" on "View More" click', () => {
+      render(<ArticleCard {...longMockArticle} />);
+
+      const viewMoreButton = screen.getByRole('button', { name: /View More/i });
+      fireEvent.click(viewMoreButton);
+
+      const viewLessButton = screen.getByRole('button', { name: /View Less/i });
+      expect(viewLessButton).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /View More/i })).not.toBeInTheDocument();
+
+    });
+
+    it('should collapse content and show "View More" on "View Less" click', () => {
+      render(<ArticleCard {...longMockArticle} />);
+
+      const viewMoreButton = screen.getByRole('button', { name: /View More/i });
+      fireEvent.click(viewMoreButton);
+
+      const viewLessButton = screen.getByRole('button', { name: /View Less/i });
+      fireEvent.click(viewLessButton);
+
+      expect(viewMoreButton).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /View Less/i })).not.toBeInTheDocument();
+    });
+
+    it('should not show "View More" button if content is short', () => {
+      render(<ArticleCard {...shortMockArticle} />);
+
+      expect(screen.queryByRole('button', { name: /View More/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /View Less/i })).not.toBeInTheDocument();
+      
+      expect(screen.getByText(shortMockArticle.content)).toBeInTheDocument();
     });
   });
 });

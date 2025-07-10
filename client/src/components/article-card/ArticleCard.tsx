@@ -2,6 +2,9 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import { useState } from 'react';
 import type { ArticleCard as ArticleCardProps } from '../../store/types';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -9,6 +12,15 @@ import ShareIcon from '@mui/icons-material/Share';
 
 const ArticleCard = (props: ArticleCardProps) => {
   const titleId = `article-title-${props.id}`;
+  const [expanded, setExpanded] = useState(false);
+
+  const handleToggleExpand = () => {
+    setExpanded(!expanded);
+  };
+
+  const isContentLong = props.content.length > 150;
+
+  const singleLineHeight = '21px';
 
   return (
     <Card
@@ -28,9 +40,23 @@ const ArticleCard = (props: ArticleCardProps) => {
           By: {props.author}
         </Typography>
 
-        <Typography variant="body2" paragraph>
-          {props.content}
-        </Typography>
+        <Box sx={{ mt: 2 }}>
+          <Collapse in={expanded} collapsedSize={singleLineHeight}>
+            <Typography variant="body2" paragraph sx={{ mb: 0 }}>
+              {props.content}
+            </Typography>
+          </Collapse>
+
+          {isContentLong && (
+            <Button
+              size="small"
+              onClick={handleToggleExpand}
+              sx={{ mt: 1 }}
+            >
+              {expanded ? 'View Less' : 'View More'}
+            </Button>
+          )}
+        </Box>
 
         <Box
           sx={{
@@ -57,7 +83,6 @@ const ArticleCard = (props: ArticleCardProps) => {
             {new Date(props.createdAt).toLocaleDateString()}
           </Typography>
         </Box>
-
         {props.summary && (
           <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
             <Typography variant="h6" component="h3">
@@ -68,6 +93,7 @@ const ArticleCard = (props: ArticleCardProps) => {
             </Typography>
           </Box>
         )}
+
       </CardContent>
     </Card>
   );
