@@ -20,7 +20,7 @@ const fetchArticles = async ({ author, sort, order = 'desc', page = 1, limit = 1
     }),
   ]);
 
-  return { data: articles, totalCount: totalCount };
+  return { articlesData: articles, totalCount: totalCount };
 };
 
 const fetchArticleById = async (id) => {
