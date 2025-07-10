@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { api, safeFetch } from '.';
-import type { ArticleCard } from '../store/types';
+import type { ArticleCard, QueryParams } from '../store/types';
+import { buildQueryString } from '../utils/buildQueryString';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -119,7 +120,11 @@ describe('api.fetchArticles', () => {
 
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(mockResponse));
 
-    const result = await api.fetchArticles();
+    const queryParams: QueryParams = {
+      page: 1,
+      limit: 10,
+    };
+    const result = await api.fetchArticles(buildQueryString(queryParams));
 
     expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles?page=1&limit=10');
     expect(result.outcome).toBe('success');

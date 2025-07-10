@@ -86,4 +86,32 @@ describe('HighlightSection - Mocking api response', () => {
     });
   });
 
+  it('Error unexpected', async () => {
+    //cite_start: Unexpected error case, with error message
+    vi.spyOn(global, 'fetch').mockRejectedValue(new Error('Unexpected Error Mock'));
+    render(<HighlightSection />);
+
+    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
+    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
+      expect(screen.getByText('Unexpected Error Mock')).toBeInTheDocument();
+    });
+  });
+
+  it('Error unexpected without error message', async () => {
+    //cite_start: Unexpected error case, without error message
+    vi.spyOn(global, 'fetch').mockRejectedValue(null);
+    render(<HighlightSection />);
+
+    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
+    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
+      expect(screen.getByText('An unexpected and unknown error occurred')).toBeInTheDocument();
+    });
+  });
+
 });

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppStore } from '../../store';
 
 import { Pagination } from '@mui/material';
+import type { QueryParams } from '../../store/types';
 
 const ArticlesPagination = () => {
 
@@ -17,14 +18,22 @@ const ArticlesPagination = () => {
   // cite_start: Now pagination loads articles when the component mounts or user changes the page
   useEffect(() => {
     if (!articlesIsLoading) {
-      fetchArticles(currentPage, articlesPerPage);
+      const searchParams: QueryParams = {
+        page: currentPage,
+        limit: articlesPerPage,
+      };
+      fetchArticles(searchParams);
     }
-  }, [fetchArticles, currentPage, articlesPerPage, articlesIsLoading]); 
+  }, [fetchArticles, currentPage, articlesPerPage, articlesIsLoading]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     event.preventDefault();
     if (value !== currentPage) {
-      fetchArticles(value, articlesPerPage);
+      const searchParams: QueryParams = {
+        page: value,
+        limit: articlesPerPage,
+      };
+      fetchArticles(searchParams);
     }
   };
 

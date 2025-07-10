@@ -2,7 +2,7 @@ import type {
   HighlightsResponse,
   ArticlesResponse,
   ApiResult,
- } from '../store/types';
+} from '../store/types';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
@@ -21,7 +21,7 @@ export async function safeFetch<T>(endpoint: string): Promise<ApiResult<T>> {
 
       return {
         outcome: 'error',
-         error: serverError,
+        error: serverError,
         status: response.status,
       };
     }
@@ -42,11 +42,7 @@ export async function safeFetch<T>(endpoint: string): Promise<ApiResult<T>> {
 export const api = {
   // cite_start: here we send the response type and function to the safeFetch function
   fetchHighlights: () => safeFetch<HighlightsResponse>('/highlights'),
-  fetchArticles: (page: number = 1, limit: number = 10) => {
-    const queryString = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    }).toString();
+  fetchArticles: (queryString: string) => {
     return safeFetch<ArticlesResponse>(`/articles?${queryString}`);
   },
 };

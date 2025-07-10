@@ -52,10 +52,16 @@ export interface ArticlesSlice {
   currentPage: number;
   articlesPerPage: number;
   articlesError: string | null;
-  fetchArticles: (page: number, articlesPerPage: number) => Promise<void>;
+  searchQuery: string;
+  fetchArticles: (searchParams: QueryParams) => Promise<void>;
   resetArticles: () => void;
 }
 
 export interface AppState extends HighlightsSlice, ArticlesSlice {
   resetAllSlices: () => void;
+}
+
+export interface QueryParams {
+  page?: number;
+  limit?: number;
 }

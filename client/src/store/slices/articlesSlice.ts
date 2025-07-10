@@ -1,6 +1,7 @@
 import type { StateCreator } from 'zustand';
 import { api } from '../../api';
-import type { ArticlesSlice, AppState } from '../types';
+import type { ArticlesSlice, AppState, QueryParams } from '../types';
+import { buildQueryString } from '../../utils/buildQueryString';
 
 const initialProps = {
   articlesData: null,
@@ -9,25 +10,25 @@ const initialProps = {
   articlesIsLoading: false,
   currentPage: 1,
   articlesPerPage: 10,
+  searchQuery: '',
 };
 
 export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> = (set) => ({
   ...initialProps,
-  fetchArticles: async (page: number, articlesPerPage: number) => {
+  fetchArticles: async (searchParams: QueryParams) => {
     set({ articlesError: null });
 
     //cite_start: Fetching articles data from the API
-    const result = await api.fetchArticles(page, articlesPerPage);
+    const result = await api.fetchArticles(buildQueryString(searchParams));
 
     if (result.outcome === 'success') {
       set({ 
         articlesData: result.data.articlesData, 
         totalCount: result.data.totalCount, 
         articlesIsLoading: false,
-        currentPage: page,
+        currentPage: searchParams.page,
       });
     } else {
-      console.log('Error fetching articles:', result.error);
       set({ 
         articlesError: result.error, 
         articlesData: null, 
