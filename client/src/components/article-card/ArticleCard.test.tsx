@@ -38,8 +38,8 @@ describe('ArticleCard Component', () => {
   it('should display the article stats correctly', () => {
     render(<ArticleCard {...baseMockArticle} />);
 
-    expect(screen.getByText(/Views: 150/i)).toBeInTheDocument();
-    expect(screen.getByText(/Shares: 25/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Views: 150/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Shares: 25/i)).toBeInTheDocument();
 
     const timeElement = screen.getByRole('time');
     const expectedDateString = new Date(baseMockArticle.createdAt).toLocaleDateString();

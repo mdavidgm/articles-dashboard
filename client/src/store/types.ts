@@ -40,7 +40,17 @@ export interface HighlightsSlice {
   fetchHighlights: () => Promise<void>;
   resetHighlights: () => void;
 }
+export interface ArticlesResponse {
+  articlesData: ArticleCard[];
+}
 
-export interface AppState extends HighlightsSlice {
+export interface ArticlesSlice {
+  articlesData: ArticleCard[] | null;
+  articlesError: string | null;
+  fetchArticles: () => Promise<void>;
+  resetArticles: () => void;
+}
+
+export interface AppState extends HighlightsSlice, ArticlesSlice {
   resetAllSlices: () => void;
 }

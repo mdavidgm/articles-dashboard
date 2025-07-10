@@ -85,8 +85,8 @@ describe('api.fetchHighlights', () => {
 
 describe('api.fetchArticles', () => {
   it('should return articles on a successful fetch', async () => {
-    const mockData = {
-      mostViewed: {
+    const mockData = [
+      {
         id: 101,
         title: 'Top Article by Views',
         author: 'Jane Doe',
@@ -95,7 +95,7 @@ describe('api.fetchArticles', () => {
         shares: 123,
         createdAt: 1752205200000,
       } as ArticleCard,
-      mostShared: {
+      {
         id: 202,
         title: 'Viral Article by Shares',
         author: 'John Smith',
@@ -104,7 +104,7 @@ describe('api.fetchArticles', () => {
         shares: 543,
         createdAt: 1752205200000,
       } as ArticleCard,
-    };
+    ];
 
     //cite_start: Mocking the fetch response, do not confuse with the response returned by our api function
     const mockResponse = new Response(JSON.stringify(mockData), {
@@ -117,6 +117,17 @@ describe('api.fetchArticles', () => {
     const result = await api.fetchArticles();
 
     expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles');
+    expect(result.outcome).toBe('success');
+    if (result.outcome === 'success') {
+      expect(Array.isArray(result.data)).toBe(true);
+
+      expect(result).toEqual({
+        outcome: 'success',
+        data: mockData,
+      });
+    } else {
+      throw new Error('API call was not successful in test setup');
+    }
 
     //cite_start: We expect the outcome to be success and a data to match our mockData
     expect(result).toEqual({
