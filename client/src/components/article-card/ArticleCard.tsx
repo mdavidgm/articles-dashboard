@@ -1,21 +1,11 @@
-import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import type { ArticleCard as ArticleCardProps } from '../../types';
 
-const ArticleCard: React.FC<ArticleCardProps> = ({
-  id,
-  title,
-  author,
-  content,
-  views,
-  shares,
-  createdAt,
-  summary,
-}) => {
-  const titleId = `article-title-${id}`;
+const ArticleCard = (props: ArticleCardProps ) => {
+  const titleId = `article-title-${props.id}`;
 
   return (
     <Card
@@ -25,15 +15,15 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
     >
       <CardContent>
         <Typography variant="h5" component="h2" id={titleId}>
-          {title}
+          {props.title}
         </Typography>
 
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          By: {author}
+          By: {props.author}
         </Typography>
 
         <Typography variant="body2" paragraph>
-          {content}
+          {props.content}
         </Typography>
 
         <Box
@@ -44,20 +34,20 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             color: 'text.secondary',
           }}
         >
-          <Typography variant="caption">Views: {views}</Typography>
-          <Typography variant="caption">Shares: {shares}</Typography>
-          <Typography variant="caption" component="time" dateTime={createdAt.toISOString()}>
-            {createdAt.toLocaleDateString()}
+          <Typography variant="caption">Views: {props.views}</Typography>
+          <Typography variant="caption">Shares: {props.shares}</Typography>
+          <Typography variant="caption" component="time" dateTime={props.createdAt.toISOString()}>
+            {props.createdAt.toLocaleDateString()}
           </Typography>
         </Box>
 
-        {summary && (
+        {props.summary && (
           <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
             <Typography variant="h6" component="h3">
               Summary
             </Typography>
             <Typography variant="body2" paragraph>
-              {summary}
+              {props.summary}
             </Typography>
           </Box>
         )}
