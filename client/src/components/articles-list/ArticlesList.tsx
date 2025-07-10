@@ -41,7 +41,7 @@ const ArticlesList = () => {
 
   if (articlesData && articlesData.length > 0) {
     return (
-      <Box sx={{ p: 2, minHeight: commonMinHeight }}>
+      <Box sx={{ p: 2, minHeight: commonMinHeight, backgroundColor: '#F5F5F5' }}>
         <Typography variant="h5" component="h2" gutterBottom>
           Browse Article
         </Typography>
@@ -51,7 +51,6 @@ const ArticlesList = () => {
               <ListItem alignItems="flex-start" sx={{ p: 0, my: 1 }}>
                 <ArticleCard {...article} />
               </ListItem>
-              <Divider component="li" sx={{ my: 2 }} />
             </div>
           ))}
         </List>

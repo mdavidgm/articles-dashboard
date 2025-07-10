@@ -28,10 +28,17 @@ const ArticleCard = (props: ArticleCardProps) => {
       aria-labelledby={titleId}
       sx={{
         width: '100%',
-        mb: 2,
       }}
     >
-      <CardContent>
+      <CardContent
+        sx={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(173, 216, 230, 0.3) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(173, 216, 230, 0.3) 1px, transparent 1px)
+          `,
+          backgroundSize: '20px 20px',
+        }}
+      >
         <Typography variant="h5" component="h2" id={titleId}>
           {props.title}
         </Typography>
@@ -93,7 +100,6 @@ const ArticleCard = (props: ArticleCardProps) => {
             </Typography>
           </Box>
         )}
-
       </CardContent>
     </Card>
   );
