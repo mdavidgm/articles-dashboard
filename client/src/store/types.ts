@@ -37,7 +37,7 @@ export interface HighlightsResponse {
 export interface HighlightsSlice {
   highlightsData: HighlightsResponse | null;
   highlightsError: string | null;
-  fetchHighlights: () => Promise<void>;
+  fetchHighlights: (authorFilter?: string) => Promise<void>;
   resetHighlights: () => void;
 }
 export interface ArticlesResponse {
@@ -52,7 +52,12 @@ export interface ArticlesSlice {
   currentPage: number;
   articlesPerPage: number;
   articlesError: string | null;
-  searchQuery: string;
+  authorFilter: string;
+  sortBy: string;
+  sortOrder: string;
+  setAuthorFilter: (author: string) => void;
+  setSortBy: (sortField: string) => void;
+  setSortOrder: (order: string) => void; 
   fetchArticles: (searchParams: QueryParams) => Promise<void>;
   resetArticles: () => void;
 }
@@ -64,4 +69,7 @@ export interface AppState extends HighlightsSlice, ArticlesSlice {
 export interface QueryParams {
   page?: number;
   limit?: number;
+  author?: string;
+  sort?: string;
+  order?: string;
 }

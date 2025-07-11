@@ -9,13 +9,13 @@ const initialProps = {
 
 export const createHighlightsSlice: StateCreator<AppState, [], [], HighlightsSlice> = (set) => ({
   ...initialProps,
-  fetchHighlights: async () => {
-    set({ highlightsError: null });
+  fetchHighlights: async (authorFilter?: string) => {
+    set({ highlightsError: null, highlightsData: null });
 
     //cite_start: Fetching highlights data from the API
-    const result = await api.fetchHighlights();
+    const result = await api.fetchHighlights(authorFilter || '');
     if (result.outcome === 'success') {
-      set({ highlightsData: result.data });
+      set({ highlightsData: result.data,  });
     } else {
       set({ highlightsError: result.error, highlightsData: null });
     }

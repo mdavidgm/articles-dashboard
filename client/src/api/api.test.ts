@@ -148,4 +148,17 @@ describe('api.fetchArticles', () => {
       data: mockApiResponseData,
     });
   });
+
+  it('should return an error outcome on a network failure', async () => {
+    vi.spyOn(global, 'fetch').mockRejectedValue(
+      new Error('Network request failed')
+    );
+
+    const result = await api.fetchArticles('page=1');
+
+    expect(result.outcome).toBe('error');
+    if (result.outcome === 'error') {
+      expect(result.error).toContain('Network request failed');
+    }
+  });
 });

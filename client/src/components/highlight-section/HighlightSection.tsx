@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppStore } from '../../store';
 import type { ArticleCard } from '../../store/types';
 
@@ -13,6 +13,7 @@ import {
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ShareIcon from '@mui/icons-material/Share';
+import { buildQueryParams } from '../../utils/buildQueryParams';
 
 const formatDate = (timestamp: number) => {
   const date = new Date(timestamp);
@@ -27,10 +28,34 @@ const HighlightSection = () => {
   const highlightsError = useAppStore((state) => state.highlightsError);
   const fetchHighlights = useAppStore((state) => state.fetchHighlights);
   const highlightsData = useAppStore((state) => state.highlightsData);
+  const authorFilter = useAppStore((state) => state.authorFilter);
+
+  const initialLoadFromURL = useRef(false);
 
   useEffect(() => {
-    fetchHighlights();
-  }, [fetchHighlights]);
+    const handleUrlLoadAndPopstate = () => {
+      if (window.location.search) {
+        initialLoadFromURL.current = true;
+        const queryParams = buildQueryParams(window.location.search);
+        fetchHighlights(queryParams.author);
+      }
+    };
+    window.addEventListener('popstate', handleUrlLoadAndPopstate);
+    handleUrlLoadAndPopstate();
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlLoadAndPopstate);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (initialLoadFromURL.current) {
+      initialLoadFromURL.current = false;
+      return;
+    }
+      fetchHighlights(authorFilter);
+  }, [fetchHighlights, authorFilter]);
 
 
   if (highlightsError) {
@@ -39,7 +64,6 @@ const HighlightSection = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        role="alert"
         sx={{ p: 2 }}
       >
         <Alert severity="error">{highlightsError}</Alert>
@@ -147,7 +171,7 @@ const HighlightSection = () => {
       aria-busy="true"
       sx={{ p: 2 }}
     >
-      <CircularProgress aria-label="Loading highlights" />
+      <CircularProgress aria-label="Loading highlights" sx={{ color: '#FFD700' }} />
     </Box>
   );
 };

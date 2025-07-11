@@ -41,7 +41,12 @@ export async function safeFetch<T>(endpoint: string): Promise<ApiResult<T>> {
 
 export const api = {
   // cite_start: here we send the response type and function to the safeFetch function
-  fetchHighlights: () => safeFetch<HighlightsResponse>('/highlights'),
+  fetchHighlights: (author?: string) => {
+    return author
+      ? safeFetch<HighlightsResponse>(`/highlights?author=${encodeURIComponent(author)}`)
+      :
+      safeFetch<HighlightsResponse>('/highlights')
+  },
   fetchArticles: (queryString: string) => {
     return safeFetch<ArticlesResponse>(`/articles?${queryString}`);
   },

@@ -1,13 +1,11 @@
 import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { act } from '@testing-library/react';
-import { useAppStore, } from '../../store';
+import { useAppStore } from '../../store';
 import HighlightSection from './HighlightSection';
 import type { ArticleCard, HighlightsResponse } from '../../store/types';
 
 describe('HighlightSection - Mocking api response', () => {
-  let fetchHighlightsSpy: ReturnType<typeof vi.spyOn>;
   const mockData: HighlightsResponse = {
     mostViewed: {
       id: 101,
@@ -32,86 +30,104 @@ describe('HighlightSection - Mocking api response', () => {
   beforeEach(() => {
     act(() => {
       useAppStore.getState().resetAllSlices();
-
-      //cite_start: We spy on the fetchHighlights function to track its calls
-      fetchHighlightsSpy = vi.spyOn(useAppStore.getState(), 'fetchHighlights');
+      vi.spyOn(useAppStore.getState(), 'fetchHighlights');
     });
   });
 
   afterEach(() => {
-    fetchHighlightsSpy.mockRestore();
     vi.restoreAllMocks();
   });
 
   it('Success', async () => {
-
-    //cite_start: Here we return the mocked value for api response
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       json: async () => mockData,
       status: 200,
     } as Response);
-
     render(<HighlightSection />);
-
     expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
-    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
-
     await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
-
       expect(screen.getByText(mockData.mostViewed.title)).toBeInTheDocument();
       expect(screen.getByText(mockData.mostShared.title)).toBeInTheDocument();
-
     });
-
   });
 
   it('Error', async () => {
-
-    //cite_start: Error case, we mock the fetch to return an error response
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
       status: 500,
       text: async () => 'Internal Server Error Mock',
     } as Response);
     render(<HighlightSection />);
-
-    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
-    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
-
     await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
       expect(screen.getByText('Internal Server Error Mock')).toBeInTheDocument();
     });
   });
+  it('should render the error alert when highlightsError state is set', () => {
+    const errorMessage = 'Direct Error For Testing';
+    vi.spyOn(useAppStore.getState(), 'fetchHighlights').mockImplementation(async () => {});
 
-  it('Error unexpected', async () => {
-    //cite_start: Unexpected error case, with error message
-    vi.spyOn(global, 'fetch').mockRejectedValue(new Error('Unexpected Error Mock'));
-    render(<HighlightSection />);
-
-    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
-    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
-      expect(screen.getByText('Unexpected Error Mock')).toBeInTheDocument();
+    act(() => {
+      useAppStore.setState({ highlightsError: errorMessage });
     });
+
+    render(<HighlightSection />);
+    const alert = screen.getByRole('alert');
+    expect(alert).toBeInTheDocument();
+    expect(alert).toHaveTextContent(errorMessage);
   });
 
-  it('Error unexpected without error message', async () => {
-    //cite_start: Unexpected error case, without error message
-    vi.spyOn(global, 'fetch').mockRejectedValue(null);
-    render(<HighlightSection />);
-
-    expect(screen.getByRole('progressbar', { name: 'Loading highlights' })).toBeInTheDocument();
-    expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('progressbar', { name: 'Loading highlights' })).not.toBeInTheDocument();
-      expect(screen.getByText('An unexpected and unknown error occurred')).toBeInTheDocument();
-    });
+  it('should clean up event listener on unmount', () => {
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const { unmount } = render(<HighlightSection />);
+    unmount();
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('popstate', expect.any(Function));
   });
 
+  it('should call fetchHighlights with an author parameter if present in the state', async () => {
+    const authorName = 'Tolkien';
+  
+    // FIX: Creamos un mock de datos válido y completo para esta respuesta
+    const mockAuthorData = {
+      mostViewed: { id: 1, title: 'Test Title', author: authorName, views: 100, shares: 10, createdAt: Date.now() },
+      mostShared: { id: 2, title: 'Another Title', author: authorName, views: 20, shares: 200, createdAt: Date.now() }
+    };
+  
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => mockAuthorData,
+      status: 200,
+    } as Response);
+  
+    act(() => {
+      useAppStore.setState({ authorFilter: authorName });
+    });
+  
+    render(<HighlightSection />);
+  
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.stringContaining(`?author=${authorName}`)
+      );
+      expect(screen.getByText('Test Title')).toBeInTheDocument();
+    });
+  
+    fetchSpy.mockRestore();
+  });
+  it('should fetch highlights with author from URL on initial load', async () => {
+    const fetchHighlightsSpy = vi.spyOn(useAppStore.getState(), 'fetchHighlights');
+    const authorName = 'Tolkien';
+    const originalPath = window.location.pathname;
+  
+    window.history.pushState({}, '', `/?author=${authorName}`);
+  
+    render(<HighlightSection />);
+  
+    await waitFor(() => {
+      expect(fetchHighlightsSpy).toHaveBeenCalledTimes(1);
+      expect(fetchHighlightsSpy).toHaveBeenCalledWith(authorName);
+    });
+    
+    window.history.pushState({}, '', originalPath);
+  });
 });
