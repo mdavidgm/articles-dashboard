@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
 import { api, safeFetch } from '.';
 import type { ArticleCard, QueryParams } from '../store/types';
 import { buildQueryString } from '../utils/buildQueryString';
@@ -74,7 +74,7 @@ describe('api.fetchHighlights', () => {
 
     const result = await api.fetchHighlights();
 
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/highlights');
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/highlights', undefined);
 
     //cite_start: We expect the outcome to be success and a data to match our mockData
     expect(result).toEqual({
@@ -126,7 +126,7 @@ describe('api.fetchArticles', () => {
     };
     const result = await api.fetchArticles(buildQueryString(queryParams));
 
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles?page=1&limit=10');
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/api/articles?page=1&limit=10', undefined);
     expect(result.outcome).toBe('success');
     if (result.outcome === 'success') {
       expect(Array.isArray(result.data.articlesData)).toBe(true);
@@ -160,5 +160,33 @@ describe('api.fetchArticles', () => {
     if (result.outcome === 'error') {
       expect(result.error).toContain('Network request failed');
     }
+  });
+
+  describe('api.getSummary', () => {
+    beforeEach(() => {
+      vi.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        json: async () => ({ id: 123, summary: 'A summary' }),
+      } as Response);
+    });
+  
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+  
+    it('should make a POST request to the summarize endpoint', async () => {
+      const articleId = 123;
+      await api.getSummary(articleId);
+  
+      const expectedUrl = `http://localhost:4000/api/articles/${articleId}/summarize`;
+      const expectedOptions: RequestInit = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+  
+      expect(global.fetch).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    });
   });
 });

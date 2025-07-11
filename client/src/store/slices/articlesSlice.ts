@@ -27,9 +27,9 @@ export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> 
     history.pushState({}, searchQuery, `?${searchQuery}`);
 
     if (result.outcome === 'success') {
-      set({ 
-        articlesData: result.data.articlesData, 
-        totalCount: result.data.totalCount, 
+      set({
+        articlesData: result.data.articlesData,
+        totalCount: result.data.totalCount,
         articlesIsLoading: false,
         currentPage: searchParams.page,
         articlesPerPage: searchParams.limit,
@@ -38,9 +38,9 @@ export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> 
         sortOrder: searchParams.order,
       });
     } else {
-      set({ 
-        articlesError: result.error, 
-        articlesData: null, 
+      set({
+        articlesError: result.error,
+        articlesData: null,
         articlesIsLoading: false,
         currentPage: 1,
         articlesPerPage: 10,
@@ -55,10 +55,10 @@ export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> 
     get().fetchArticles(params);
     get().fetchHighlights();
   },
-  setSortBy: (sort: string ) => {
+  setSortBy: (sort: string) => {
     set({ sortBy: sort, currentPage: 1 });
     const { articlesPerPage, authorFilter, sortOrder } = get();
-    const params: QueryParams = { page: 1, limit: articlesPerPage, author: authorFilter, sort: sort, order: sortOrder };  
+    const params: QueryParams = { page: 1, limit: articlesPerPage, author: authorFilter, sort: sort, order: sortOrder };
     get().fetchArticles(params);
   },
   setSortOrder: (order: string) => {
@@ -66,6 +66,28 @@ export const createArticlesSlice: StateCreator<AppState, [], [], ArticlesSlice> 
     const { articlesPerPage, authorFilter, sortBy } = get();
     const params: QueryParams = { page: 1, limit: articlesPerPage, author: authorFilter, sort: sortBy, order: order };
     get().fetchArticles(params);
+  },
+  getSummary: async (id: number) => {
+    const result = await api.getSummary(id);
+    console.log('result', result);
+
+    const formattedSummary = {
+      id: id,
+      summary: 'N/A',
+    };
+    if (result.outcome === 'success') {
+      formattedSummary.id = result.data.id;
+      formattedSummary.summary = result.data.summary;
+    }
+    console.log('formattedSummary', formattedSummary);
+    set((state) => ({
+      articlesData: (state.articlesData || []).map((article) =>
+        article.id === id
+          ? { ...article, summary: formattedSummary}
+          : article
+      ),
+    }));
+
   },
   resetArticles: () => {
     set(initialProps);

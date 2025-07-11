@@ -107,7 +107,8 @@ describe('HighlightSection - Mocking api response', () => {
   
     await waitFor(() => {
       expect(fetchSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`?author=${authorName}`)
+        `http://localhost:4000/api/highlights?author=${authorName}`,
+        undefined
       );
       expect(screen.getByText('Test Title')).toBeInTheDocument();
     });

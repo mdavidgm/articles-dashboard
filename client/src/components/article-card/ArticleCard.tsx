@@ -3,12 +3,16 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Slide from '@mui/material/Slide';
+import Fade from '@mui/material/Fade';
 import Collapse from '@mui/material/Collapse';
 import { useState } from 'react';
 import type { ArticleCard as ArticleCardProps } from '../../store/types';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ShareIcon from '@mui/icons-material/Share';
+
+import { useAppStore } from '../../store';
 
 const ArticleCard = (props: ArticleCardProps) => {
   const titleId = `article-title-${props.id}`;
@@ -17,9 +21,13 @@ const ArticleCard = (props: ArticleCardProps) => {
   const handleToggleExpand = () => {
     setExpanded(!expanded);
   };
+  const getSummary = useAppStore((state) => state.getSummary);
+  
+  const handleSummarize = () => {
+    getSummary(props.id);
+  };
 
   const isContentLong = props.content.length > 150;
-
   const singleLineHeight = '21px';
 
   return (
@@ -54,15 +62,34 @@ const ArticleCard = (props: ArticleCardProps) => {
             </Typography>
           </Collapse>
 
-          {isContentLong && (
-            <Button
-              size="small"
-              onClick={handleToggleExpand}
-              sx={{ mt: 1 }}
-            >
-              {expanded ? 'View Less' : 'View More'}
-            </Button>
-          )}
+          <Box 
+            sx={{ 
+              mt: 1, 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center' 
+            }}
+          >
+            {isContentLong ? (
+              <Button
+                size="small"
+                onClick={handleToggleExpand}
+              >
+                {expanded ? 'View Less' : 'View More'}
+              </Button>
+            ) : (
+              <div />
+            )}
+
+            {!props.summary && (
+              <Button
+                size="small"
+                onClick={handleSummarize}
+              >
+                Summarize
+              </Button>
+            )}
+          </Box>
         </Box>
 
         <Box
@@ -90,16 +117,18 @@ const ArticleCard = (props: ArticleCardProps) => {
             {new Date(props.createdAt).toLocaleDateString()}
           </Typography>
         </Box>
-        {props.summary && (
-          <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
-            <Typography variant="h6" component="h3">
-              Summary
-            </Typography>
-            <Typography variant="body2" paragraph>
-              {props.summary}
-            </Typography>
-          </Box>
-        )}
+        <Slide direction="up" in={!!props.summary} mountOnEnter unmountOnExit>
+          <Fade in={!!props.summary} timeout={500}>
+            <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
+              <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
+                Summary
+              </Typography>
+              <Typography variant="body2" paragraph>
+              {props.summary?.summary}
+              </Typography>
+            </Box>
+          </Fade>
+        </Slide>
       </CardContent>
     </Card>
   );

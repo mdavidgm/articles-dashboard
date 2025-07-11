@@ -11,7 +11,10 @@ export interface ArticleCard {
   views: number;
   shares: number;
   createdAt: number;
-  summary?: string;
+  summary?: {
+    id: number;
+    summary: string;
+  };
 }
 
 export interface HighlightCardProps extends ArticleCard {
@@ -31,6 +34,15 @@ export type ApiResult<T> =
 export interface HighlightsResponse {
   mostViewed: ArticleCard;
   mostShared: ArticleCard;
+}
+export interface SummaryResponse {
+  summary: string;
+  id: number;
+}
+
+export interface SummaryObject {
+  id: number;
+  text: string;
 }
 
 // cite_start: Slices are the individual pieces of state and actions in the store.
@@ -58,6 +70,7 @@ export interface ArticlesSlice {
   setAuthorFilter: (author: string) => void;
   setSortBy: (sortField: string) => void;
   setSortOrder: (order: string) => void; 
+  getSummary: (id: number) => void; 
   fetchArticles: (searchParams: QueryParams) => Promise<void>;
   resetArticles: () => void;
 }

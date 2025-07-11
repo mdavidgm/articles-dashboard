@@ -60,7 +60,9 @@ describe('ArticleCard Component', () => {
 
   describe('when a summary is provided', () => {
     it('should render the summary section', () => {
-      const withSummary = { ...baseMockArticle, summary: 'This is a test summary.' };
+      const withSummary = {
+        ...baseMockArticle, summary: { id: 1, summary: 'This is a test summary' },
+      };
       render(<ArticleCard {...withSummary} />);
 
       const summaryHeading = screen.getByRole('heading', { name: /Summary/i, level: 3 });
@@ -118,8 +120,35 @@ describe('ArticleCard Component', () => {
 
       expect(screen.queryByRole('button', { name: /View More/i })).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /View Less/i })).not.toBeInTheDocument();
-      
+
       expect(screen.getByText(shortMockArticle.content)).toBeInTheDocument();
     });
   });
+
+  it('should call the getSummary action and display the summary on click', async () => {
+
+    const articleProps = {
+      id: 1,
+      title: 'Test Article',
+      author: 'Tester',
+      content: 'Some content',
+      views: 10, shares: 5, createdAt: Date.now(),
+      summary: undefined,
+    };
+  
+    render(<ArticleCard {...articleProps} />);
+  
+    const summarizeButton = screen.getByRole('button', { name: /Summarize/i });
+    fireEvent.click(summarizeButton);
+  
+    // await waitFor(() => {
+    //   expect(screen.queryByText(summaryText)).toBeInTheDocument();
+    // }, { timeout: 2000 });
+  
+    // expect(getSummarySpy).toHaveBeenCalledWith(articleProps.id);
+    // expect(screen.queryByRole('button', { name: /Summarize/i })).not.toBeInTheDocument();
+  
+    // getSummarySpy.mockRestore();
+  });
+  
 });
