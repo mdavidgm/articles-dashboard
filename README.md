@@ -99,6 +99,7 @@ Open a **new terminal window** and follow these steps.
     > The application will be available at **`http://localhost:5173/`**.
 
 ---
+<img width="1475" height="879" alt="image" src="https://github.com/user-attachments/assets/3db4faab-34cc-4011-ae9c-16bdad636783" />
 
 ## Testing
 
