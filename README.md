@@ -111,8 +111,7 @@ From the `/server` directory, run the following command to execute all Jest test
 npm test
 ```
 It fills a test database which generated each time that nom test is esecuted and pass tests with coverage report:
-
-![alt text](image.png)
+<img width="639" height="356" alt="image" src="https://github.com/user-attachments/assets/9e26998a-47e7-4d3b-bf20-2dd4c2fbc7ff" />
 
 ### **Client Testing**
 
@@ -124,8 +123,9 @@ Run only Unit Tests:
 ```bash
 npm run test:unit
 ```
+<img width="791" height="711" alt="image" src="https://github.com/user-attachments/assets/733b8d68-e321-4ca8-a033-bd29c2668d8e" />
 
-![alt text](image-1.png)
+
 
 Run only End-to-End Tests:
 ```bash
