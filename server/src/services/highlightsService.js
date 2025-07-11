@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const fetchHighlights = async (author) => {
-  await delay(3000);
+  await delay(1000);
   const where = author ? { author: { equals: author } } : {};
 
   const [mostViewed] = await prisma.article.findMany({
