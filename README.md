@@ -97,7 +97,7 @@ Open a **new terminal window** and follow these steps.
     ```bash
     npm run dev
     ```
-    > The application will be available at **`http://localhost:5173/`**.
+    > The application will be available at **`http://localhost:5173/`** or **`http://localhost:5174/`** it changes sometimes by vite
 
 ---
 <img width="1475" height="879" alt="image" src="https://github.com/user-attachments/assets/3db4faab-34cc-4011-ae9c-16bdad636783" />
