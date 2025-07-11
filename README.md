@@ -17,6 +17,7 @@ A full-stack web application featuring a modern React frontend (built with Vite 
 * **Framework:** React (v18+) with TypeScript
 * **Build Tool:** Vite
 * **UI Library:** Material-UI (MUI)
+* **State Management:** Zustand
 * **Unit Testing:** Vitest & React Testing Library
 * **E2E Testing:** Playwright
 * **Code Quality:** ESLint
